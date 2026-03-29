@@ -1,13 +1,14 @@
 go 1.26.1
 
 use (
-	./pkg/buildingblocks
-	./services/catalog
-	./services/cart
-	./services/ordering
-	./services/inventory
-	./services/profiles
-	./services/reviews
-	./services/wishlists
-	./services/coupons
+	./src/pkg/buildingblocks
+	./src/services/catalog
+	./src/services/cart
+	./src/services/ordering
+	./src/services/inventory
+	./src/services/profiles
+	./src/services/reviews
+	./src/services/wishlists
+	./src/services/coupons
+	./tests/ordering-user-flow
 )
