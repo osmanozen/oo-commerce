@@ -10,5 +10,4 @@ use (
 	./src/services/reviews
 	./src/services/wishlists
 	./src/services/coupons
-	./tests/ordering-user-flow
 )
