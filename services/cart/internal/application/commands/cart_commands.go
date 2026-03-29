@@ -41,7 +41,7 @@ func (h *AddToCartHandler) Handle(ctx context.Context, cmd AddToCartCommand) (st
 	}
 
 	// Find or create cart for buyer.
-	cart, err := h.findOrCreateCart(ctx, cmd.UserID, cmd.GuestID)
+	cart, isNew, err := h.findOrCreateCart(ctx, cmd.UserID, cmd.GuestID)
 	if err != nil {
 		return struct{}{}, fmt.Errorf("finding cart: %w", err)
 	}
@@ -53,6 +53,13 @@ func (h *AddToCartHandler) Handle(ctx context.Context, cmd AddToCartCommand) (st
 	}
 
 	// Persist.
+	if isNew {
+		if err := h.carts.Create(ctx, cart); err != nil {
+			return struct{}{}, fmt.Errorf("saving cart: %w", err)
+		}
+		return struct{}{}, nil
+	}
+
 	if err := h.carts.Update(ctx, cart); err != nil {
 		return struct{}{}, fmt.Errorf("saving cart: %w", err)
 	}
@@ -60,22 +67,24 @@ func (h *AddToCartHandler) Handle(ctx context.Context, cmd AddToCartCommand) (st
 	return struct{}{}, nil
 }
 
-func (h *AddToCartHandler) findOrCreateCart(ctx context.Context, userID, guestID *string) (*domain.Cart, error) {
+func (h *AddToCartHandler) findOrCreateCart(ctx context.Context, userID, guestID *string) (*domain.Cart, bool, error) {
 	if userID != nil && *userID != "" {
 		cart, err := h.carts.GetByUserID(ctx, *userID)
 		if err == nil && cart != nil {
-			return cart, nil
+			return cart, false, nil
 		}
-		return domain.NewCart(domain.BuyerIdentity{UserID: userID})
+		created, createErr := domain.NewCart(domain.BuyerIdentity{UserID: userID})
+		return created, true, createErr
 	}
 	if guestID != nil && *guestID != "" {
 		cart, err := h.carts.GetByGuestID(ctx, *guestID)
 		if err == nil && cart != nil {
-			return cart, nil
+			return cart, false, nil
 		}
-		return domain.NewCart(domain.BuyerIdentity{GuestID: guestID})
+		created, createErr := domain.NewCart(domain.BuyerIdentity{GuestID: guestID})
+		return created, true, createErr
 	}
-	return nil, bberrors.ValidationError("either user id or guest id is required")
+	return nil, false, bberrors.ValidationError("either user id or guest id is required")
 }
 
 var _ cqrs.CommandHandler[AddToCartCommand, struct{}] = (*AddToCartHandler)(nil)

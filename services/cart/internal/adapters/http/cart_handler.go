@@ -4,8 +4,10 @@ import (
 	"encoding/json"
 	"log/slog"
 	"net/http"
+	"time"
 
 	"github.com/go-chi/chi/v5"
+	"github.com/google/uuid"
 	bberrors "github.com/osmanozen/oo-commerce/pkg/buildingblocks/errors"
 	"github.com/osmanozen/oo-commerce/services/cart/internal/application/commands"
 	"github.com/osmanozen/oo-commerce/services/cart/internal/application/queries"
@@ -99,9 +101,19 @@ func (h *CartHandler) HandleAddToCart(w http.ResponseWriter, r *http.Request) {
 	cmd.GuestID = extractGuestID(r)
 
 	if cmd.UserID == nil && cmd.GuestID == nil {
-		// Mock auto-assign guest ID for demo via header or cookie. For here we just default.
-		gid := "guest-mock-uuid"
+		// Auto-assign guest id when anonymous client does not send one.
+		gid := uuid.Must(uuid.NewV7()).String()
 		cmd.GuestID = &gid
+		http.SetCookie(w, &http.Cookie{
+			Name:     "cart_buyer_id",
+			Value:    gid,
+			Path:     "/",
+			MaxAge:   30 * 24 * 3600,
+			HttpOnly: true,
+			SameSite: http.SameSiteLaxMode,
+			Secure:   r.TLS != nil,
+			Expires:  time.Now().Add(30 * 24 * time.Hour).UTC(),
+		})
 	}
 
 	_, err := h.addToCart.Handle(r.Context(), cmd)
@@ -250,6 +262,10 @@ func extractGuestID(r *http.Request) *string {
 	gid := r.Header.Get("X-Guest-ID")
 	if gid != "" {
 		return &gid
+	}
+	if cookie, err := r.Cookie("cart_buyer_id"); err == nil && cookie.Value != "" {
+		val := cookie.Value
+		return &val
 	}
 	return nil
 }

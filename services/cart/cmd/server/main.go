@@ -12,6 +12,7 @@ import (
 
 	"github.com/go-chi/chi/v5"
 	chimiddleware "github.com/go-chi/chi/v5/middleware"
+	"github.com/jackc/pgx/v5/pgxpool"
 	"github.com/osmanozen/oo-commerce/pkg/buildingblocks/messaging"
 	bbmiddleware "github.com/osmanozen/oo-commerce/pkg/buildingblocks/middleware"
 
@@ -31,6 +32,7 @@ func main() {
 
 	port := envOrDefault("PORT", "8082")
 	kafkaBrokers := []string{envOrDefault("KAFKA_BROKERS", "localhost:9092")}
+	databaseURL := envOrDefault("DATABASE_URL", "postgres://postgres:postgres@localhost:5432/ocommerce?sslmode=disable")
 
 	kafkaCfg := messaging.DefaultKafkaProducerConfig(kafkaBrokers)
 	kafkaProducer := messaging.NewKafkaProducer(kafkaCfg, logger)
@@ -38,6 +40,29 @@ func main() {
 
 	ctx, cancel := context.WithCancel(context.Background())
 	defer cancel()
+
+	poolCfg, err := pgxpool.ParseConfig(databaseURL)
+	if err != nil {
+		logger.Error("failed to parse database url", slog.String("error", err.Error()))
+		os.Exit(1)
+	}
+
+	pool, err := pgxpool.NewWithConfig(ctx, poolCfg)
+	if err != nil {
+		logger.Error("failed to initialize database pool", slog.String("error", err.Error()))
+		os.Exit(1)
+	}
+	defer pool.Close()
+
+	pingCtx, pingCancel := context.WithTimeout(ctx, 5*time.Second)
+	defer pingCancel()
+	if err := pool.Ping(pingCtx); err != nil {
+		logger.Error("database ping failed", slog.String("error", err.Error()))
+		os.Exit(1)
+	}
+
+	// Repository
+	cartRepo := persistence.NewCartRepository(pool, logger)
 
 	// Background job: cleanup abandoned carts (> 30 days inactive)
 	go func() {
@@ -48,8 +73,12 @@ func main() {
 			case <-ctx.Done():
 				return
 			case <-ticker.C:
-				// TODO: cartRepo.CleanupAbandoned(ctx, 720)  // 30 days * 24 hours
-				logger.Info("abandoned cart cleanup tick")
+				deleted, cleanupErr := cartRepo.CleanupAbandoned(ctx, 720) // 30 days * 24 hours
+				if cleanupErr != nil {
+					logger.Error("abandoned cart cleanup failed", slog.String("error", cleanupErr.Error()))
+					continue
+				}
+				logger.Info("abandoned cart cleanup completed", slog.Int64("deleted", deleted))
 			}
 		}
 	}()
@@ -68,9 +97,6 @@ func main() {
 		w.WriteHeader(http.StatusOK)
 		fmt.Fprint(w, `{"status":"healthy","service":"cart"}`)
 	})
-
-	// Repository
-	cartRepo := persistence.NewCartRepository(nil, logger) // We leave nil for DB pool in this scaffold
 
 	// Handlers
 	addToCartHandler := commands.NewAddToCartHandler(cartRepo)
