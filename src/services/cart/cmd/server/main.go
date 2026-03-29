@@ -60,6 +60,14 @@ func main() {
 		logger.Error("database ping failed", slog.String("error", err.Error()))
 		os.Exit(1)
 	}
+	appliedMigrations, err := persistence.RunMigrations(ctx, pool)
+	if err != nil {
+		logger.Error("failed to run cart migrations", slog.String("error", err.Error()))
+		os.Exit(1)
+	}
+	if appliedMigrations > 0 {
+		logger.Info("cart migrations applied", slog.Int("count", appliedMigrations))
+	}
 
 	// Repository
 	cartRepo := persistence.NewCartRepository(pool, logger)

@@ -77,6 +77,15 @@ func main() {
 		os.Exit(1)
 	}
 
+	appliedMigrations, err := inventorypersistence.RunMigrations(ctx, pool)
+	if err != nil {
+		logger.Error("failed to run inventory migrations", slog.String("error", err.Error()))
+		os.Exit(1)
+	}
+	if appliedMigrations > 0 {
+		logger.Info("inventory migrations applied", slog.Int("count", appliedMigrations))
+	}
+
 	stockRepo := inventorypersistence.NewStockItemRepository(pool, logger)
 
 	eventConsumer := inventoryevents.NewInventoryEventConsumer(stockRepo, kafkaConsumer, kafkaProducer, logger)

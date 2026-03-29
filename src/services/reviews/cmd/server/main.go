@@ -57,6 +57,14 @@ func main() {
 		logger.Error("database ping failed", slog.String("error", err.Error()))
 		os.Exit(1)
 	}
+	appliedMigrations, err := reviewpersistence.RunMigrations(ctx, pool)
+	if err != nil {
+		logger.Error("failed to run reviews migrations", slog.String("error", err.Error()))
+		os.Exit(1)
+	}
+	if appliedMigrations > 0 {
+		logger.Info("reviews migrations applied", slog.Int("count", appliedMigrations))
+	}
 
 	r := chi.NewRouter()
 	r.Use(chimiddleware.RequestID)

@@ -67,6 +67,14 @@ func main() {
 		logger.Error("database ping failed", slog.String("error", err.Error()))
 		os.Exit(1)
 	}
+	appliedMigrations, err := persistence.RunMigrations(ctx, pool)
+	if err != nil {
+		logger.Error("failed to run ordering migrations", slog.String("error", err.Error()))
+		os.Exit(1)
+	}
+	if appliedMigrations > 0 {
+		logger.Info("ordering migrations applied", slog.Int("count", appliedMigrations))
+	}
 
 	orderRepo := persistence.NewOrderRepository(pool, logger)
 	cartReader := persistence.NewCartReader(pool)

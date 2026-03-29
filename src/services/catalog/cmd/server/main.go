@@ -73,6 +73,14 @@ func main() {
 		logger.Error("database ping failed", slog.String("error", err.Error()))
 		os.Exit(1)
 	}
+	appliedMigrations, err := catalogpersistence.RunMigrations(ctx, pool)
+	if err != nil {
+		logger.Error("failed to run catalog migrations", slog.String("error", err.Error()))
+		os.Exit(1)
+	}
+	if appliedMigrations > 0 {
+		logger.Info("catalog migrations applied", slog.Int("count", appliedMigrations))
+	}
 
 	categoryRepo := catalogpersistence.NewCategoryRepository(pool, logger)
 	productRepo := catalogpersistence.NewProductRepository(pool, logger)
