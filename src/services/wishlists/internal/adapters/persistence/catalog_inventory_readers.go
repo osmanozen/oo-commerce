@@ -8,7 +8,7 @@ import (
 	"github.com/jackc/pgx/v5/pgxpool"
 	"github.com/shopspring/decimal"
 
-	"github.com/osmanozen/oo-commerce/services/wishlists/internal/application/queries"
+	"github.com/osmanozen/oo-commerce/src/services/wishlists/internal/application/queries"
 )
 
 type CatalogReader struct {

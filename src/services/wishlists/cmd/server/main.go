@@ -13,11 +13,11 @@ import (
 	"github.com/go-chi/chi/v5"
 	chimiddleware "github.com/go-chi/chi/v5/middleware"
 	"github.com/jackc/pgx/v5/pgxpool"
-	bbmiddleware "github.com/osmanozen/oo-commerce/pkg/buildingblocks/middleware"
-	wishlisthttp "github.com/osmanozen/oo-commerce/services/wishlists/internal/adapters/http"
-	wishlistpersistence "github.com/osmanozen/oo-commerce/services/wishlists/internal/adapters/persistence"
-	"github.com/osmanozen/oo-commerce/services/wishlists/internal/application/commands"
-	"github.com/osmanozen/oo-commerce/services/wishlists/internal/application/queries"
+	bbmiddleware "github.com/osmanozen/oo-commerce/src/pkg/buildingblocks/middleware"
+	wishlisthttp "github.com/osmanozen/oo-commerce/src/services/wishlists/internal/adapters/http"
+	wishlistpersistence "github.com/osmanozen/oo-commerce/src/services/wishlists/internal/adapters/persistence"
+	"github.com/osmanozen/oo-commerce/src/services/wishlists/internal/application/commands"
+	"github.com/osmanozen/oo-commerce/src/services/wishlists/internal/application/queries"
 )
 
 func main() {

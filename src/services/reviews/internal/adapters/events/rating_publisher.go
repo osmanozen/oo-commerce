@@ -6,8 +6,8 @@ import (
 	"fmt"
 	"log/slog"
 
-	"github.com/osmanozen/oo-commerce/pkg/buildingblocks/messaging"
-	"github.com/osmanozen/oo-commerce/services/reviews/internal/domain"
+	"github.com/osmanozen/oo-commerce/src/pkg/buildingblocks/messaging"
+	"github.com/osmanozen/oo-commerce/src/services/reviews/internal/domain"
 )
 
 // ReviewRatingPublisher publishes rating statistics to Kafka

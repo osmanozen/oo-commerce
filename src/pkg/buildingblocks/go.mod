@@ -1,4 +1,4 @@
-module github.com/osmanozen/oo-commerce/pkg/buildingblocks
+module github.com/osmanozen/oo-commerce/src/pkg/buildingblocks
 
 go 1.26.1
 

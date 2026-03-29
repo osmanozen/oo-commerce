@@ -9,8 +9,8 @@ import (
 	"github.com/google/uuid"
 	"github.com/jackc/pgx/v5"
 	"github.com/jackc/pgx/v5/pgxpool"
-	bberrors "github.com/osmanozen/oo-commerce/pkg/buildingblocks/errors"
-	"github.com/osmanozen/oo-commerce/services/ordering/internal/saga"
+	bberrors "github.com/osmanozen/oo-commerce/src/pkg/buildingblocks/errors"
+	"github.com/osmanozen/oo-commerce/src/services/ordering/internal/saga"
 )
 
 type SagaStore struct {

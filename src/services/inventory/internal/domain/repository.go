@@ -4,7 +4,7 @@ import (
 	"context"
 
 	"github.com/google/uuid"
-	"github.com/osmanozen/oo-commerce/pkg/buildingblocks/types"
+	"github.com/osmanozen/oo-commerce/src/pkg/buildingblocks/types"
 )
 
 // StockItemRepository defines the persistence contract for StockItem aggregates.

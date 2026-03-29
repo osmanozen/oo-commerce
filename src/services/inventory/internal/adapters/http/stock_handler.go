@@ -6,9 +6,9 @@ import (
 	"net/http"
 
 	"github.com/go-chi/chi/v5"
-	bberrors "github.com/osmanozen/oo-commerce/pkg/buildingblocks/errors"
-	"github.com/osmanozen/oo-commerce/services/inventory/internal/application/commands"
-	"github.com/osmanozen/oo-commerce/services/inventory/internal/application/queries"
+	bberrors "github.com/osmanozen/oo-commerce/src/pkg/buildingblocks/errors"
+	"github.com/osmanozen/oo-commerce/src/services/inventory/internal/application/commands"
+	"github.com/osmanozen/oo-commerce/src/services/inventory/internal/application/queries"
 )
 
 // StockHandler handles HTTP requests for inventory endpoints.

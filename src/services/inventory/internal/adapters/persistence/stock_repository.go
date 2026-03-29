@@ -9,11 +9,11 @@ import (
 	"time"
 
 	"github.com/google/uuid"
-	bbdomain "github.com/osmanozen/oo-commerce/pkg/buildingblocks/domain"
+	bbdomain "github.com/osmanozen/oo-commerce/src/pkg/buildingblocks/domain"
 	"github.com/jackc/pgx/v5"
 	"github.com/jackc/pgx/v5/pgxpool"
-	bberrors "github.com/osmanozen/oo-commerce/pkg/buildingblocks/errors"
-	"github.com/osmanozen/oo-commerce/services/inventory/internal/domain"
+	bberrors "github.com/osmanozen/oo-commerce/src/pkg/buildingblocks/errors"
+	"github.com/osmanozen/oo-commerce/src/services/inventory/internal/domain"
 )
 
 type StockItemRepository struct {

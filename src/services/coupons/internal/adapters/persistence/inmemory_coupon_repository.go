@@ -7,7 +7,7 @@ import (
 	"sync"
 
 	"github.com/google/uuid"
-	"github.com/osmanozen/oo-commerce/services/coupons/internal/domain"
+	"github.com/osmanozen/oo-commerce/src/services/coupons/internal/domain"
 )
 
 type InMemoryCouponRepository struct {

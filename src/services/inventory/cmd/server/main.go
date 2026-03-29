@@ -13,13 +13,13 @@ import (
 	"github.com/go-chi/chi/v5"
 	chimiddleware "github.com/go-chi/chi/v5/middleware"
 	"github.com/jackc/pgx/v5/pgxpool"
-	"github.com/osmanozen/oo-commerce/pkg/buildingblocks/messaging"
-	bbmiddleware "github.com/osmanozen/oo-commerce/pkg/buildingblocks/middleware"
-	inventoryevents "github.com/osmanozen/oo-commerce/services/inventory/internal/adapters/events"
-	inventoryhttp "github.com/osmanozen/oo-commerce/services/inventory/internal/adapters/http"
-	inventorypersistence "github.com/osmanozen/oo-commerce/services/inventory/internal/adapters/persistence"
-	"github.com/osmanozen/oo-commerce/services/inventory/internal/application/commands"
-	"github.com/osmanozen/oo-commerce/services/inventory/internal/application/queries"
+	"github.com/osmanozen/oo-commerce/src/pkg/buildingblocks/messaging"
+	bbmiddleware "github.com/osmanozen/oo-commerce/src/pkg/buildingblocks/middleware"
+	inventoryevents "github.com/osmanozen/oo-commerce/src/services/inventory/internal/adapters/events"
+	inventoryhttp "github.com/osmanozen/oo-commerce/src/services/inventory/internal/adapters/http"
+	inventorypersistence "github.com/osmanozen/oo-commerce/src/services/inventory/internal/adapters/persistence"
+	"github.com/osmanozen/oo-commerce/src/services/inventory/internal/application/commands"
+	"github.com/osmanozen/oo-commerce/src/services/inventory/internal/application/queries"
 )
 
 func main() {

@@ -8,9 +8,9 @@ import (
 
 	"github.com/go-chi/chi/v5"
 	"github.com/google/uuid"
-	bberrors "github.com/osmanozen/oo-commerce/pkg/buildingblocks/errors"
-	"github.com/osmanozen/oo-commerce/services/cart/internal/application/commands"
-	"github.com/osmanozen/oo-commerce/services/cart/internal/application/queries"
+	bberrors "github.com/osmanozen/oo-commerce/src/pkg/buildingblocks/errors"
+	"github.com/osmanozen/oo-commerce/src/services/cart/internal/application/commands"
+	"github.com/osmanozen/oo-commerce/src/services/cart/internal/application/queries"
 )
 
 // CartHandler handles HTTP requests for cart endpoints.

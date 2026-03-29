@@ -5,8 +5,8 @@ import (
 	"fmt"
 
 	"github.com/google/uuid"
-	bberrors "github.com/osmanozen/oo-commerce/pkg/buildingblocks/errors"
-	"github.com/osmanozen/oo-commerce/services/reviews/internal/domain"
+	bberrors "github.com/osmanozen/oo-commerce/src/pkg/buildingblocks/errors"
+	"github.com/osmanozen/oo-commerce/src/services/reviews/internal/domain"
 )
 
 type CreateReviewCommand struct {

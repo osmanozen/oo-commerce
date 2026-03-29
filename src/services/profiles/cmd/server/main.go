@@ -12,12 +12,12 @@ import (
 
 	"github.com/go-chi/chi/v5"
 	chimiddleware "github.com/go-chi/chi/v5/middleware"
-	"github.com/osmanozen/oo-commerce/pkg/buildingblocks/messaging"
-	bbmiddleware "github.com/osmanozen/oo-commerce/pkg/buildingblocks/middleware"
-	profileshttp "github.com/osmanozen/oo-commerce/services/profiles/internal/adapters/http"
-	profilespersistence "github.com/osmanozen/oo-commerce/services/profiles/internal/adapters/persistence"
-	"github.com/osmanozen/oo-commerce/services/profiles/internal/application/commands"
-	"github.com/osmanozen/oo-commerce/services/profiles/internal/application/queries"
+	"github.com/osmanozen/oo-commerce/src/pkg/buildingblocks/messaging"
+	bbmiddleware "github.com/osmanozen/oo-commerce/src/pkg/buildingblocks/middleware"
+	profileshttp "github.com/osmanozen/oo-commerce/src/services/profiles/internal/adapters/http"
+	profilespersistence "github.com/osmanozen/oo-commerce/src/services/profiles/internal/adapters/persistence"
+	"github.com/osmanozen/oo-commerce/src/services/profiles/internal/application/commands"
+	"github.com/osmanozen/oo-commerce/src/services/profiles/internal/application/queries"
 )
 
 func main() {

@@ -3,9 +3,9 @@ package commands
 import (
 	"context"
 
-	"github.com/osmanozen/oo-commerce/pkg/buildingblocks/cqrs"
-	bberrors "github.com/osmanozen/oo-commerce/pkg/buildingblocks/errors"
-	"github.com/osmanozen/oo-commerce/services/catalog/internal/domain"
+	"github.com/osmanozen/oo-commerce/src/pkg/buildingblocks/cqrs"
+	bberrors "github.com/osmanozen/oo-commerce/src/pkg/buildingblocks/errors"
+	"github.com/osmanozen/oo-commerce/src/services/catalog/internal/domain"
 )
 
 // ─── Create Category Command ─────────────────────────────────────────────────

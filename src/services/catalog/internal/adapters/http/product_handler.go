@@ -7,9 +7,9 @@ import (
 	"strconv"
 
 	"github.com/go-chi/chi/v5"
-	bberrors "github.com/osmanozen/oo-commerce/pkg/buildingblocks/errors"
-	"github.com/osmanozen/oo-commerce/services/catalog/internal/application/commands"
-	"github.com/osmanozen/oo-commerce/services/catalog/internal/application/queries"
+	bberrors "github.com/osmanozen/oo-commerce/src/pkg/buildingblocks/errors"
+	"github.com/osmanozen/oo-commerce/src/services/catalog/internal/application/commands"
+	"github.com/osmanozen/oo-commerce/src/services/catalog/internal/application/queries"
 )
 
 // ProductHandler handles HTTP requests for product endpoints.

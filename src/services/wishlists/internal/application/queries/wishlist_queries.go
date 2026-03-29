@@ -6,11 +6,11 @@ import (
 	"time"
 
 	"github.com/google/uuid"
-	"github.com/osmanozen/oo-commerce/pkg/buildingblocks/cqrs"
-	bberrors "github.com/osmanozen/oo-commerce/pkg/buildingblocks/errors"
+	"github.com/osmanozen/oo-commerce/src/pkg/buildingblocks/cqrs"
+	bberrors "github.com/osmanozen/oo-commerce/src/pkg/buildingblocks/errors"
 	"github.com/shopspring/decimal"
 
-	"github.com/osmanozen/oo-commerce/services/wishlists/internal/domain"
+	"github.com/osmanozen/oo-commerce/src/services/wishlists/internal/domain"
 )
 
 type CatalogProduct struct {

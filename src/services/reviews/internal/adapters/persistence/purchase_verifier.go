@@ -6,7 +6,7 @@ import (
 
 	"github.com/google/uuid"
 	"github.com/jackc/pgx/v5/pgxpool"
-	"github.com/osmanozen/oo-commerce/services/reviews/internal/domain"
+	"github.com/osmanozen/oo-commerce/src/services/reviews/internal/domain"
 )
 
 type PurchaseVerifier struct {

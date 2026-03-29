@@ -1,11 +1,11 @@
-module github.com/osmanozen/oo-commerce/services/cart
+module github.com/osmanozen/oo-commerce/src/services/cart
 
 go 1.26.1
 
 require (
 	github.com/go-chi/chi/v5 v5.2.1
 	github.com/google/uuid v1.6.0
-	github.com/osmanozen/oo-commerce/pkg/buildingblocks v0.0.0
+	github.com/osmanozen/oo-commerce/src/pkg/buildingblocks v0.0.0
 	github.com/shopspring/decimal v1.4.0
 )
 
@@ -22,4 +22,4 @@ require (
 	golang.org/x/text v0.29.0 // indirect
 )
 
-replace github.com/osmanozen/oo-commerce/pkg/buildingblocks => ../../pkg/buildingblocks
+replace github.com/osmanozen/oo-commerce/src/pkg/buildingblocks => ../../pkg/buildingblocks

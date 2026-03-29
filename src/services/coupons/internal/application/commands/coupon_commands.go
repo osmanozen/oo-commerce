@@ -7,8 +7,8 @@ import (
 	"time"
 
 	"github.com/google/uuid"
-	bberrors "github.com/osmanozen/oo-commerce/pkg/buildingblocks/errors"
-	"github.com/osmanozen/oo-commerce/services/coupons/internal/domain"
+	bberrors "github.com/osmanozen/oo-commerce/src/pkg/buildingblocks/errors"
+	"github.com/osmanozen/oo-commerce/src/services/coupons/internal/domain"
 	"github.com/shopspring/decimal"
 )
 

@@ -10,11 +10,11 @@ import (
 	"time"
 
 	"github.com/google/uuid"
-	bbdomain "github.com/osmanozen/oo-commerce/pkg/buildingblocks/domain"
-	bberrors "github.com/osmanozen/oo-commerce/pkg/buildingblocks/errors"
-	"github.com/osmanozen/oo-commerce/pkg/buildingblocks/persistence"
-	"github.com/osmanozen/oo-commerce/pkg/buildingblocks/types"
-	"github.com/osmanozen/oo-commerce/services/ordering/internal/domain"
+	bbdomain "github.com/osmanozen/oo-commerce/src/pkg/buildingblocks/domain"
+	bberrors "github.com/osmanozen/oo-commerce/src/pkg/buildingblocks/errors"
+	"github.com/osmanozen/oo-commerce/src/pkg/buildingblocks/persistence"
+	"github.com/osmanozen/oo-commerce/src/pkg/buildingblocks/types"
+	"github.com/osmanozen/oo-commerce/src/services/ordering/internal/domain"
 	"github.com/shopspring/decimal"
 
 	"github.com/jackc/pgx/v5"

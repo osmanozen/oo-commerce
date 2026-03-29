@@ -4,7 +4,7 @@ import (
 	"context"
 	"sync"
 
-	"github.com/osmanozen/oo-commerce/services/profiles/internal/domain"
+	"github.com/osmanozen/oo-commerce/src/services/profiles/internal/domain"
 )
 
 type InMemoryProfileRepository struct {

@@ -7,7 +7,7 @@ import (
 	"log/slog"
 
 	"github.com/google/uuid"
-	"github.com/osmanozen/oo-commerce/pkg/buildingblocks/messaging"
+	"github.com/osmanozen/oo-commerce/src/pkg/buildingblocks/messaging"
 )
 
 // SagaEventConsumer subscribes to Kafka topics and routes events to the saga orchestrator.

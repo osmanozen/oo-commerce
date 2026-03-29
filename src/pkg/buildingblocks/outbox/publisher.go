@@ -8,7 +8,7 @@ import (
 	"time"
 
 	"github.com/google/uuid"
-	"github.com/osmanozen/oo-commerce/pkg/buildingblocks/domain"
+	"github.com/osmanozen/oo-commerce/src/pkg/buildingblocks/domain"
 )
 
 // OutboxMessage represents a domain event stored for reliable delivery.

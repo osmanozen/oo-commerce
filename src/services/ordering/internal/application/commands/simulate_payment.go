@@ -6,10 +6,10 @@ import (
 	"fmt"
 
 	"github.com/google/uuid"
-	"github.com/osmanozen/oo-commerce/pkg/buildingblocks/cqrs"
-	bberrors "github.com/osmanozen/oo-commerce/pkg/buildingblocks/errors"
-	"github.com/osmanozen/oo-commerce/pkg/buildingblocks/messaging"
-	"github.com/osmanozen/oo-commerce/services/ordering/internal/adapters/persistence"
+	"github.com/osmanozen/oo-commerce/src/pkg/buildingblocks/cqrs"
+	bberrors "github.com/osmanozen/oo-commerce/src/pkg/buildingblocks/errors"
+	"github.com/osmanozen/oo-commerce/src/pkg/buildingblocks/messaging"
+	"github.com/osmanozen/oo-commerce/src/services/ordering/internal/adapters/persistence"
 )
 
 type SimulatePaymentCommand struct {

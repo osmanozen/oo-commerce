@@ -4,8 +4,8 @@ import (
 	"context"
 	"time"
 
-	"github.com/osmanozen/oo-commerce/pkg/buildingblocks/cqrs"
-	"github.com/osmanozen/oo-commerce/services/cart/internal/domain"
+	"github.com/osmanozen/oo-commerce/src/pkg/buildingblocks/cqrs"
+	"github.com/osmanozen/oo-commerce/src/services/cart/internal/domain"
 	"github.com/shopspring/decimal"
 )
 

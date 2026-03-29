@@ -8,8 +8,8 @@ import (
 	"time"
 
 	"github.com/google/uuid"
-	bbdomain "github.com/osmanozen/oo-commerce/pkg/buildingblocks/domain"
-	"github.com/osmanozen/oo-commerce/pkg/buildingblocks/types"
+	bbdomain "github.com/osmanozen/oo-commerce/src/pkg/buildingblocks/domain"
+	"github.com/osmanozen/oo-commerce/src/pkg/buildingblocks/types"
 	"github.com/shopspring/decimal"
 )
 
