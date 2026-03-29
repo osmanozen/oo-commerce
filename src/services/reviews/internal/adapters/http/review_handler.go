@@ -41,10 +41,10 @@ func NewReviewHandler(
 func (h *ReviewHandler) RegisterRoutes(r chi.Router) {
 	r.Route("/api/reviews", func(r chi.Router) {
 		r.Route("/products/{productId}", func(r chi.Router) {
-			r.Get("", h.HandleGetByProduct)
+			r.Get("/", h.HandleGetByProduct)
 			r.Get("/mine", h.HandleGetMine)
 			r.Get("/can-review", h.HandleCanReview)
-			r.Post("", h.HandleCreate)
+			r.Post("/", h.HandleCreate)
 		})
 
 		r.Put("/{reviewId}", h.HandleUpdate)
