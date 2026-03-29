@@ -7,17 +7,13 @@ CREATE SCHEMA IF NOT EXISTS reviews;
 CREATE TABLE reviews.reviews (
     id uuid PRIMARY KEY,
     product_id uuid NOT NULL,
-    user_id varchar(100) NOT NULL,
-    user_display_name varchar(200) NOT NULL,
+    user_id uuid NOT NULL,
     rating int NOT NULL CHECK (rating BETWEEN 1 AND 5),
-    title varchar(200) NOT NULL,
-    body varchar(2000) NOT NULL,
-    is_verified boolean NOT NULL DEFAULT false,
-    helpful_count int NOT NULL DEFAULT 0,
+    review_text varchar(1000) NOT NULL,
     created_at timestamptz NOT NULL DEFAULT now(),
     updated_at timestamptz NOT NULL DEFAULT now(),
     version int NOT NULL DEFAULT 0,
-    CONSTRAINT uq_review_user_product UNIQUE (user_id, product_id)
+    CONSTRAINT uq_reviews_user_product UNIQUE (user_id, product_id)
 );
 
 CREATE INDEX idx_reviews_product_id ON reviews.reviews(product_id);

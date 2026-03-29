@@ -1,10 +1,9 @@
 package domain
 
 import (
+	"context"
 	"errors"
-	"fmt"
 	"strings"
-	"time"
 
 	"github.com/google/uuid"
 	bbdomain "github.com/osmanozen/oo-commerce/pkg/buildingblocks/domain"
@@ -23,7 +22,6 @@ func ReviewIDFromString(s string) (ReviewID, error) { return types.TypedIDFromSt
 
 // ─── Value Objects ───────────────────────────────────────────────────────────
 
-// Rating is a validated review rating (1-5 stars).
 type Rating struct {
 	value int
 }
@@ -35,10 +33,8 @@ func NewRating(value int) (Rating, error) {
 	return Rating{value: value}, nil
 }
 
-func (r Rating) Value() int     { return r.value }
-func (r Rating) String() string { return fmt.Sprintf("%d/5", r.value) }
+func (r Rating) Value() int { return r.value }
 
-// ReviewText is a validated review body (10-2000 chars).
 type ReviewText struct {
 	value string
 }
@@ -48,8 +44,8 @@ func NewReviewText(text string) (ReviewText, error) {
 	if len(trimmed) < 10 {
 		return ReviewText{}, errors.New("review text must be at least 10 characters")
 	}
-	if len(trimmed) > 2000 {
-		return ReviewText{}, errors.New("review text must be at most 2000 characters")
+	if len(trimmed) > 1000 {
+		return ReviewText{}, errors.New("review text must be at most 1000 characters")
 	}
 	return ReviewText{value: trimmed}, nil
 }
@@ -58,47 +54,34 @@ func (r ReviewText) String() string { return r.value }
 
 // ─── Review Aggregate Root ───────────────────────────────────────────────────
 
-// Review represents a product review with verified purchase tracking.
 type Review struct {
 	bbdomain.BaseAggregateRoot
 	bbdomain.Auditable
 	bbdomain.Versionable
 
-	ID              ReviewID   `json:"id" db:"id"`
-	ProductID       uuid.UUID  `json:"productId" db:"product_id"`
-	UserID          string     `json:"userId" db:"user_id"`
-	UserDisplayName string     `json:"userDisplayName" db:"user_display_name"`
-	Rating          Rating     `json:"rating"`
-	Title           string     `json:"title" db:"title"`
-	Body            ReviewText `json:"body"`
-	IsVerified      bool       `json:"isVerified" db:"is_verified"`
-	HelpfulCount    int        `json:"helpfulCount" db:"helpful_count"`
+	ID        ReviewID   `json:"id" db:"id"`
+	ProductID uuid.UUID  `json:"productId" db:"product_id"`
+	UserID    uuid.UUID  `json:"userId" db:"user_id"`
+	Rating    Rating     `json:"rating"`
+	Text      ReviewText `json:"text"`
 }
 
-// NewReview creates a new Review with verified purchase validation.
-func NewReview(productID uuid.UUID, userID, displayName string, rating int, title, body string, isVerified bool) (*Review, error) {
+func NewReview(productID, userID uuid.UUID, rating int, text string) (*Review, error) {
 	ratingVO, err := NewRating(rating)
 	if err != nil {
 		return nil, err
 	}
-	bodyVO, err := NewReviewText(body)
+	textVO, err := NewReviewText(text)
 	if err != nil {
 		return nil, err
 	}
 
-	if strings.TrimSpace(title) == "" || len(title) > 200 {
-		return nil, errors.New("title must be 1-200 characters")
-	}
-
 	r := &Review{
-		ID:              NewReviewID(),
-		ProductID:       productID,
-		UserID:          userID,
-		UserDisplayName: displayName,
-		Rating:          ratingVO,
-		Title:           strings.TrimSpace(title),
-		Body:            bodyVO,
-		IsVerified:      isVerified,
+		ID:        NewReviewID(),
+		ProductID: productID,
+		UserID:    userID,
+		Rating:    ratingVO,
+		Text:      textVO,
 	}
 	r.SetCreated()
 
@@ -112,21 +95,18 @@ func NewReview(productID uuid.UUID, userID, displayName string, rating int, titl
 	return r, nil
 }
 
-// Update modifies a review's content.
-func (r *Review) Update(rating int, title, body string) error {
+func (r *Review) Update(rating int, text string) error {
 	ratingVO, err := NewRating(rating)
 	if err != nil {
 		return err
 	}
-	bodyVO, err := NewReviewText(body)
+	textVO, err := NewReviewText(text)
 	if err != nil {
 		return err
 	}
 
-	oldRating := r.Rating.Value()
 	r.Rating = ratingVO
-	r.Title = strings.TrimSpace(title)
-	r.Body = bodyVO
+	r.Text = textVO
 	r.SetUpdated()
 	r.IncrementVersion()
 
@@ -134,21 +114,27 @@ func (r *Review) Update(rating int, title, body string) error {
 		BaseDomainEvent: bbdomain.NewBaseDomainEvent(),
 		ReviewID:        r.ID.Value(),
 		ProductID:       r.ProductID,
-		OldRating:       oldRating,
-		NewRating:       rating,
+		Rating:          rating,
 	})
 
 	return nil
 }
 
+func (r *Review) MarkDeleted() {
+	r.AddDomainEvent(&ReviewDeletedEvent{
+		BaseDomainEvent: bbdomain.NewBaseDomainEvent(),
+		ReviewID:        r.ID.Value(),
+		ProductID:       r.ProductID,
+		Rating:          r.Rating.Value(),
+	})
+}
+
 // ─── Rating Statistics ───────────────────────────────────────────────────────
 
-// RatingStats holds aggregated rating statistics for a product.
 type RatingStats struct {
-	ProductID     uuid.UUID       `json:"productId" db:"product_id"`
-	AverageRating decimal.Decimal `json:"averageRating" db:"average_rating"`
-	ReviewCount   int             `json:"reviewCount" db:"review_count"`
-	Distribution  map[int]int     `json:"distribution"` // star → count
+	ProductID     uuid.UUID        `json:"productId" db:"product_id"`
+	AverageRating *decimal.Decimal `json:"averageRating" db:"average_rating"`
+	ReviewCount   int              `json:"reviewCount" db:"review_count"`
 }
 
 // ─── Domain Events ───────────────────────────────────────────────────────────
@@ -166,8 +152,7 @@ type ReviewUpdatedEvent struct {
 	bbdomain.BaseDomainEvent
 	ReviewID  uuid.UUID `json:"reviewId"`
 	ProductID uuid.UUID `json:"productId"`
-	OldRating int       `json:"oldRating"`
-	NewRating int       `json:"newRating"`
+	Rating    int       `json:"rating"`
 }
 
 func (e *ReviewUpdatedEvent) EventType() string { return "reviews.review.updated" }
@@ -183,32 +168,28 @@ func (e *ReviewDeletedEvent) EventType() string { return "reviews.review.deleted
 
 // ─── Verified Purchase Checker ───────────────────────────────────────────────
 
-// PurchaseVerifier checks if a user has purchased a product (cross-service query).
 type PurchaseVerifier interface {
-	// HasPurchased returns true if the user has a confirmed order containing the product.
-	HasPurchased(ctx interface{}, userID string, productID uuid.UUID) (bool, error)
+	HasPurchased(ctx context.Context, userID string, productID uuid.UUID) (bool, error)
+	GetVerifiedUserIDs(ctx context.Context, productID uuid.UUID, userIDs []string) (map[string]struct{}, error)
+}
+
+type ProfileReader interface {
+	GetDisplayNames(ctx context.Context, userIDs []string) (map[string]string, error)
 }
 
 // ─── Review Repository ──────────────────────────────────────────────────────
 
 type ReviewRepository interface {
-	Create(ctx interface{}, review *Review) error
-	GetByID(ctx interface{}, id ReviewID) (*Review, error)
-	GetByProductID(ctx interface{}, productID uuid.UUID, offset, limit int) ([]Review, int, error)
-	Update(ctx interface{}, review *Review) error
-	Delete(ctx interface{}, id ReviewID) error
-	GetRatingStats(ctx interface{}, productID uuid.UUID) (*RatingStats, error)
-	ExistsByUserAndProduct(ctx interface{}, userID string, productID uuid.UUID) (bool, error)
+	Create(ctx context.Context, review *Review) error
+	GetByID(ctx context.Context, id ReviewID) (*Review, error)
+	GetByProductID(ctx context.Context, productID uuid.UUID, offset, limit int) ([]Review, int, error)
+	GetByUserAndProduct(ctx context.Context, userID, productID uuid.UUID) (*Review, error)
+	Update(ctx context.Context, review *Review) error
+	Delete(ctx context.Context, review *Review) error
+	GetRatingStats(ctx context.Context, productID uuid.UUID) (*RatingStats, error)
+	ExistsByUserAndProduct(ctx context.Context, userID, productID uuid.UUID) (bool, error)
 }
 
-// Since review events update the Catalog service's product rating,
-// the Reviews consumer publishes rating recalculation events to Kafka.
-// The Catalog service subscribes to these events and updates its product cache.
-//
-// Flow: Review Created → Kafka → Catalog Service → UpdateReviewStats
-// This keeps the Catalog's rating stats eventually consistent with Reviews.
 type ReviewEventPublisher interface {
-	PublishRatingUpdate(ctx interface{}, stats *RatingStats) error
+	PublishRatingUpdate(ctx context.Context, stats *RatingStats) error
 }
-
-type unusedTime = time.Time

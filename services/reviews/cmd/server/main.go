@@ -12,8 +12,14 @@ import (
 
 	"github.com/go-chi/chi/v5"
 	chimiddleware "github.com/go-chi/chi/v5/middleware"
+	"github.com/jackc/pgx/v5/pgxpool"
 	"github.com/osmanozen/oo-commerce/pkg/buildingblocks/messaging"
 	bbmiddleware "github.com/osmanozen/oo-commerce/pkg/buildingblocks/middleware"
+	reviewevents "github.com/osmanozen/oo-commerce/services/reviews/internal/adapters/events"
+	reviewhttp "github.com/osmanozen/oo-commerce/services/reviews/internal/adapters/http"
+	reviewpersistence "github.com/osmanozen/oo-commerce/services/reviews/internal/adapters/persistence"
+	"github.com/osmanozen/oo-commerce/services/reviews/internal/application/commands"
+	"github.com/osmanozen/oo-commerce/services/reviews/internal/application/queries"
 )
 
 func main() {
@@ -26,10 +32,31 @@ func main() {
 
 	port := envOrDefault("PORT", "8086")
 	kafkaBrokers := []string{envOrDefault("KAFKA_BROKERS", "localhost:9092")}
+	databaseURL := envOrDefault("DATABASE_URL", "postgres://postgres:postgres@localhost:5432/ocommerce?sslmode=disable")
 
 	kafkaCfg := messaging.DefaultKafkaProducerConfig(kafkaBrokers)
 	kafkaProducer := messaging.NewKafkaProducer(kafkaCfg, logger)
 	defer kafkaProducer.Close()
+
+	ctx := context.Background()
+	poolCfg, err := pgxpool.ParseConfig(databaseURL)
+	if err != nil {
+		logger.Error("failed to parse database url", slog.String("error", err.Error()))
+		os.Exit(1)
+	}
+	pool, err := pgxpool.NewWithConfig(ctx, poolCfg)
+	if err != nil {
+		logger.Error("failed to initialize database pool", slog.String("error", err.Error()))
+		os.Exit(1)
+	}
+	defer pool.Close()
+
+	pingCtx, pingCancel := context.WithTimeout(ctx, 5*time.Second)
+	defer pingCancel()
+	if err := pool.Ping(pingCtx); err != nil {
+		logger.Error("database ping failed", slog.String("error", err.Error()))
+		os.Exit(1)
+	}
 
 	r := chi.NewRouter()
 	r.Use(chimiddleware.RequestID)
@@ -45,6 +72,28 @@ func main() {
 		w.WriteHeader(http.StatusOK)
 		fmt.Fprint(w, `{"status":"healthy","service":"reviews"}`)
 	})
+
+	reviewRepo := reviewpersistence.NewReviewRepository(pool)
+	purchaseVerifier := reviewpersistence.NewPurchaseVerifier(pool)
+	profileReader := reviewpersistence.NewProfileReader(pool)
+	ratingPublisher := reviewevents.NewReviewRatingPublisher(kafkaProducer, logger)
+
+	getByProduct := queries.NewGetReviewsByProductHandler(reviewRepo, purchaseVerifier, profileReader)
+	getMine := queries.NewGetUserReviewForProductHandler(reviewRepo)
+	canReview := queries.NewCanReviewHandler(reviewRepo, purchaseVerifier)
+	createReview := commands.NewCreateReviewHandler(reviewRepo, purchaseVerifier, ratingPublisher)
+	updateReview := commands.NewUpdateReviewHandler(reviewRepo, ratingPublisher)
+	deleteReview := commands.NewDeleteReviewHandler(reviewRepo, ratingPublisher)
+
+	reviewHandler := reviewhttp.NewReviewHandler(
+		getByProduct,
+		getMine,
+		canReview,
+		createReview,
+		updateReview,
+		deleteReview,
+	)
+	reviewHandler.RegisterRoutes(r)
 
 	server := &http.Server{
 		Addr:         ":" + port,
