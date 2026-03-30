@@ -9,12 +9,17 @@ services:
       - --providers.file.filename=/etc/traefik/dynamic.yml
       - --providers.file.watch=true
       - --entrypoints.web.address=:80
+      - --entrypoints.web.http.redirections.entrypoint.to=websecure
+      - --entrypoints.web.http.redirections.entrypoint.scheme=https
+      - --entrypoints.websecure.address=:443
       - --ping=true
     ports:
       - "80:80"
+      - "443:443"
       - "8089:8080"
     volumes:
       - ./infra/traefik/dynamic.yml:/etc/traefik/dynamic.yml:ro
+      - ./infra/traefik/certs:/etc/traefik/certs:ro
 
   # ─── PostgreSQL ──────────────────────────────────────────────────────────
   postgres:

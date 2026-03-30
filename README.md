@@ -20,9 +20,10 @@ Go-based e-commerce backend built with domain-oriented microservices, using DDD 
 - Makefile-based local workflows
 
 ## API Gateway (Traefik)
-- Base URL: `http://localhost`
+- Base URL: `https://localhost`
 - Traefik dashboard: `http://localhost:8089/dashboard/`
 - API route format: `/api/<service>/...`
+- Local TLS certificate files: `infra/traefik/certs/localhost.crt` and `infra/traefik/certs/localhost.key`
 - Service health routes via gateway:
 	- `GET /catalog/health`
 	- `GET /cart/health`
@@ -33,7 +34,8 @@ Go-based e-commerce backend built with domain-oriented microservices, using DDD 
 	- `GET /wishlists/health`
 	- `GET /coupons/health`
 
-All `/api/*` service routes are reachable through Traefik on port `80`.
+All `/api/*` service routes are reachable through Traefik on port `443`.
+Certificate was generated for `CN=localhost` and imported into `CurrentUser\Root` on Windows for local trust.
 
 ## Services
 

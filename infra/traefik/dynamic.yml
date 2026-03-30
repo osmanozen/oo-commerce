@@ -29,13 +29,15 @@ http:
     catalog-api:
       rule: PathPrefix(`/api/catalog`)
       entryPoints:
-        - web
+        - websecure
+      tls: {}
       service: catalog
 
     catalog-health:
       rule: Path(`/catalog/health`)
       entryPoints:
-        - web
+        - websecure
+      tls: {}
       middlewares:
         - catalog-health-rewrite
       service: catalog
@@ -43,13 +45,15 @@ http:
     cart-api:
       rule: PathPrefix(`/api/cart`)
       entryPoints:
-        - web
+        - websecure
+      tls: {}
       service: cart
 
     cart-health:
       rule: Path(`/cart/health`)
       entryPoints:
-        - web
+        - websecure
+      tls: {}
       middlewares:
         - cart-health-rewrite
       service: cart
@@ -57,13 +61,15 @@ http:
     ordering-api:
       rule: PathPrefix(`/api/ordering`)
       entryPoints:
-        - web
+        - websecure
+      tls: {}
       service: ordering
 
     ordering-health:
       rule: Path(`/ordering/health`)
       entryPoints:
-        - web
+        - websecure
+      tls: {}
       middlewares:
         - ordering-health-rewrite
       service: ordering
@@ -71,13 +77,15 @@ http:
     inventory-api:
       rule: PathPrefix(`/api/inventory`)
       entryPoints:
-        - web
+        - websecure
+      tls: {}
       service: inventory
 
     inventory-health:
       rule: Path(`/inventory/health`)
       entryPoints:
-        - web
+        - websecure
+      tls: {}
       middlewares:
         - inventory-health-rewrite
       service: inventory
@@ -85,13 +93,15 @@ http:
     profiles-api:
       rule: PathPrefix(`/api/profiles`)
       entryPoints:
-        - web
+        - websecure
+      tls: {}
       service: profiles
 
     profiles-health:
       rule: Path(`/profiles/health`)
       entryPoints:
-        - web
+        - websecure
+      tls: {}
       middlewares:
         - profiles-health-rewrite
       service: profiles
@@ -99,13 +109,15 @@ http:
     reviews-api:
       rule: PathPrefix(`/api/reviews`)
       entryPoints:
-        - web
+        - websecure
+      tls: {}
       service: reviews
 
     reviews-health:
       rule: Path(`/reviews/health`)
       entryPoints:
-        - web
+        - websecure
+      tls: {}
       middlewares:
         - reviews-health-rewrite
       service: reviews
@@ -113,13 +125,15 @@ http:
     wishlists-api:
       rule: PathPrefix(`/api/wishlist`)
       entryPoints:
-        - web
+        - websecure
+      tls: {}
       service: wishlists
 
     wishlists-health:
       rule: Path(`/wishlists/health`)
       entryPoints:
-        - web
+        - websecure
+      tls: {}
       middlewares:
         - wishlists-health-rewrite
       service: wishlists
@@ -127,13 +141,15 @@ http:
     coupons-api:
       rule: PathPrefix(`/api/coupons`)
       entryPoints:
-        - web
+        - websecure
+      tls: {}
       service: coupons
 
     coupons-health:
       rule: Path(`/coupons/health`)
       entryPoints:
-        - web
+        - websecure
+      tls: {}
       middlewares:
         - coupons-health-rewrite
       service: coupons
@@ -178,3 +194,8 @@ http:
       loadBalancer:
         servers:
           - url: http://coupons:8088
+
+tls:
+  certificates:
+    - certFile: /etc/traefik/certs/localhost.crt
+      keyFile: /etc/traefik/certs/localhost.key
