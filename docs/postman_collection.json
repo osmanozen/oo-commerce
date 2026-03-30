@@ -2,18 +2,18 @@
   "info": {
     "_postman_id": "7a0f36b8-77d8-4722-ae8b-8f2b15f0a61f",
     "name": "OO-Commerce Microservices (All Services)",
-    "description": "Regenerated Postman collection for all OO-Commerce microservices running on Docker.",
+    "description": "Postman collection for OO-Commerce services behind Traefik HTTPS gateway.",
     "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
   },
   "item": [
     {
-      "name": "Catalog Service (8081)",
+      "name": "Catalog Service",
       "item": [
         {
           "name": "Health",
           "request": {
             "method": "GET",
-            "url": "{{catalog_base}}/health"
+            "url": "{{catalog_base}}/catalog/health"
           }
         },
         {
@@ -121,13 +121,13 @@
       ]
     },
     {
-      "name": "Cart Service (8082)",
+      "name": "Cart Service",
       "item": [
         {
           "name": "Health",
           "request": {
             "method": "GET",
-            "url": "{{cart_base}}/health"
+            "url": "{{cart_base}}/cart/health"
           }
         },
         {
@@ -202,13 +202,13 @@
       ]
     },
     {
-      "name": "Ordering Service (8083)",
+      "name": "Ordering Service",
       "item": [
         {
           "name": "Health",
           "request": {
             "method": "GET",
-            "url": "{{ordering_base}}/health"
+            "url": "{{ordering_base}}/ordering/health"
           }
         },
         {
@@ -272,13 +272,13 @@
       ]
     },
     {
-      "name": "Inventory Service (8084)",
+      "name": "Inventory Service",
       "item": [
         {
           "name": "Health",
           "request": {
             "method": "GET",
-            "url": "{{inventory_base}}/health"
+            "url": "{{inventory_base}}/inventory/health"
           }
         },
         {
@@ -318,13 +318,13 @@
       ]
     },
     {
-      "name": "Profiles Service (8085)",
+      "name": "Profiles Service",
       "item": [
         {
           "name": "Health",
           "request": {
             "method": "GET",
-            "url": "{{profiles_base}}/health"
+            "url": "{{profiles_base}}/profiles/health"
           }
         },
         {
@@ -425,13 +425,13 @@
       ]
     },
     {
-      "name": "Reviews Service (8086)",
+      "name": "Reviews Service",
       "item": [
         {
           "name": "Health",
           "request": {
             "method": "GET",
-            "url": "{{reviews_base}}/health"
+            "url": "{{reviews_base}}/reviews/health"
           }
         },
         {
@@ -498,13 +498,13 @@
       ]
     },
     {
-      "name": "Wishlists Service (8087)",
+      "name": "Wishlists Service",
       "item": [
         {
           "name": "Health",
           "request": {
             "method": "GET",
-            "url": "{{wishlists_base}}/health"
+            "url": "{{wishlists_base}}/wishlists/health"
           }
         },
         {
@@ -550,13 +550,13 @@
       ]
     },
     {
-      "name": "Coupons Service (8088)",
+      "name": "Coupons Service",
       "item": [
         {
           "name": "Health",
           "request": {
             "method": "GET",
-            "url": "{{coupons_base}}/health"
+            "url": "{{coupons_base}}/coupons/health"
           }
         },
         {
@@ -622,25 +622,42 @@
           }
         }
       ]
+    },
+    {
+      "name": "OPA",
+      "item": [
+        {
+          "name": "Health",
+          "request": {
+            "method": "GET",
+            "url": "{{opa_base}}/health"
+          }
+        },
+        {
+          "name": "Allow (GET user)",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"input\": {\n    \"method\": \"GET\",\n    \"role\": \"user\"\n  }\n}"
+            },
+            "url": "{{opa_base}}/v1/data/ecommerce/authz/allow"
+          }
+        },
+        {
+          "name": "Allow (POST admin)",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"input\": {\n    \"method\": \"POST\",\n    \"role\": \"admin\"\n  }\n}"
+            },
+            "url": "{{opa_base}}/v1/data/ecommerce/authz/allow"
+          }
+        }
+      ]
     }
-  ],
-  "variable": [
-    { "key": "catalog_base", "value": "http://localhost:8081" },
-    { "key": "cart_base", "value": "http://localhost:8082" },
-    { "key": "ordering_base", "value": "http://localhost:8083" },
-    { "key": "inventory_base", "value": "http://localhost:8084" },
-    { "key": "profiles_base", "value": "http://localhost:8085" },
-    { "key": "reviews_base", "value": "http://localhost:8086" },
-    { "key": "wishlists_base", "value": "http://localhost:8087" },
-    { "key": "coupons_base", "value": "http://localhost:8088" },
-    { "key": "user_id", "value": "user-123" },
-    { "key": "guest_id", "value": "guest-123" },
-    { "key": "category_id", "value": "00000000-0000-0000-0000-000000000001" },
-    { "key": "product_id", "value": "00000000-0000-0000-0000-000000000002" },
-    { "key": "cart_item_id", "value": "00000000-0000-0000-0000-000000000003" },
-    { "key": "order_id", "value": "00000000-0000-0000-0000-000000000004" },
-    { "key": "review_id", "value": "00000000-0000-0000-0000-000000000005" },
-    { "key": "address_id", "value": "00000000-0000-0000-0000-000000000006" },
-    { "key": "coupon_id", "value": "00000000-0000-0000-0000-000000000007" }
   ]
 }
